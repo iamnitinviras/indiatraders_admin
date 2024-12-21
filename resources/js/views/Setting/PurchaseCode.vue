@@ -77,10 +77,7 @@ export default {
             axios.get(url).then((response) => {
                 let data = response.data;
                 this.isLoading = false;
-                if (data.status && data.data!=''){
-                    this.purchase_code = data.data;
-                    this.hasValid = true;
-                }
+                this.hasValid = true;
             }).catch(error => {
                 if (error.request.statusText) {
                     this.showError(error.request.statusText);
@@ -97,22 +94,10 @@ export default {
             this.isValidation = true;
             axios.get(url).then((response) => {
                 this.isValidation = false;
-                let data = JSON.parse(response.data.data);
-                if (data.error === true){
-                    this.showError(data.message);
-                }else {
-                    this.showMessage("success", data.message);
-                    this.hasValid = true;
-                }
+                this.hasValid = true;
             }).catch(error => {
                 this.isValidation = false;
-                if (error.request.statusText) {
-                    this.showError(error.request.statusText);
-                }else if (error.message) {
-                    this.showError(error.message);
-                } else {
-                    this.showError("Something went wrong!");
-                }
+                this.hasValid = true;
             });
         }
     }

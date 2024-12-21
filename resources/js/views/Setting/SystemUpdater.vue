@@ -85,7 +85,7 @@ export default {
   },
 
   created: function () {
-    this.checkSystemRegister();
+    //this.checkSystemRegister();
   },
   methods: {
       checkSystemRegister(){
@@ -96,9 +96,9 @@ export default {
                     // If the response is 1, run checkSystemUpdate
                     this.checkSystemUpdate();
                 }
-            
+
           });
-          
+
       },
       checkSystemUpdate(){
           axios.get(this.$baseUrl + '/updater.check').then((response) => {

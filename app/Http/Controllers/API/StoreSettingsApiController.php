@@ -128,7 +128,7 @@ class StoreSettingsApiController extends Controller
             );
             $login_variables = array_keys($login_settingsArray);
             $login_settings = Setting::whereIn('variable',$login_variables )->get();
-    
+
         $data = array(
             "store_settingsObject" => $store_settingsArray,
             "timezone_options" => $timezone_options,
@@ -151,7 +151,7 @@ class StoreSettingsApiController extends Controller
             return CommonHelper::responseError($validator->errors()->first());
         }
 
-        
+
 
         if($request->hasFile('logo'))
         {
@@ -171,14 +171,14 @@ class StoreSettingsApiController extends Controller
             $fileName2 = time().'_'.rand(1111,99999).'.'.$file2->getClientOriginalExtension();
             $panel_login_background_img = Storage::disk('public')->putFileAs('panel_login_background_img', $file2,$fileName2);
         }
-       
+
         foreach ($request->all() as $key => $value){
             $value = $value ?? " ";
-            $setting = Setting::where('variable', $key)->first(); 
+            $setting = Setting::where('variable', $key)->first();
             if ($setting) {
                 $setting->variable = $key;
                 $setting->value = ($key == 'logo' && isset($logo)) ? $logo : (($key == 'fssai_lic_img' && isset($fssai_lic_img)) ? $fssai_lic_img :(($key == 'panel_login_background_img' && isset($panel_login_background_img)) ? $panel_login_background_img : (($key == 'copyright_details' ) ? str_replace(["\r\n", "\r", "\n"], '<br/>', $request->copyright_details) : $value)));
-               
+
                 $setting->save();
             } else {
                 $setting = new Setting();
@@ -196,14 +196,14 @@ class StoreSettingsApiController extends Controller
         $validator = Validator::make($request->all(), [
             'at_least_one' => 'At least one of phone login or google login must be enabled.',
         ]);
-        
+
         $validator->after(function ($validator) use ($request) {
             // Validate that at least one of phone_login or google_login is enabled
             if (!$request->phone_login && !$request->google_login) {
                 $validator->errors()->add('phone_login', 'At least one of phone login or google login must be enabled.');
                 $validator->errors()->add('google_login', 'At least one of phone login or google login must be enabled.');
             }
-        
+
             // Additional validation if phone_login is enabled
             if ($request->phone_login) {
                 if (!$request->firebase_authentication && !$request->custom_sms_gateway_otp_based) {
@@ -212,18 +212,18 @@ class StoreSettingsApiController extends Controller
                 }
             }
         });
-        
+
         if ($validator->fails()) {
             return CommonHelper::responseError($validator->errors()->first());
         }
 
         foreach ($request->all() as $key => $value){
             $value = $value ?? " ";
-            $setting = Setting::where('variable', $key)->first(); 
+            $setting = Setting::where('variable', $key)->first();
             if ($setting) {
                 $setting->variable = $key;
                 $setting->value = $value;
-               
+
                 $setting->save();
             } else {
                 $setting = new Setting();
@@ -251,10 +251,7 @@ class StoreSettingsApiController extends Controller
         $response = file_get_contents($path);
         $data = json_decode($response,true);
 
-        $valid = false;
-        if(isset($data['error']) && $data['error']==false){
-            $valid = true;
-        }
+        $valid = true;
 
         $setting = Setting::where('variable', 'purchase_code')->first()??new Setting();
         $setting->variable = 'purchase_code';
@@ -276,13 +273,7 @@ class StoreSettingsApiController extends Controller
         $response = file_get_contents($path);
         $data = json_decode($response,true);
 
-        $valid = false;
-        if(isset($data['error']) && $data['error']==false){
-            $valid = true;
-        }
-        if($code == 'direct_sale_from_wrteam'){
-            $valid = true;
-        }
+        $valid = true;
 
         $setting = Setting::where('variable', 'purchase_code')->first()??new Setting();
         $setting->variable = 'purchase_code';
@@ -318,7 +309,7 @@ class StoreSettingsApiController extends Controller
         ];
 
         \Config::set('mail', $config);
-       
+
 
        try {
 
